@@ -10,4 +10,29 @@ on:
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive   # підтягуємо ZMK submodule
+
+      - name: Set up Python & west
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install west
+
+      - name: Initialize West
+        run: |
+          west init -l config zmk
+          west update
+
+      - name: Build firmware
+        run: |
+          west build -s config -b nice_nano_v2 -- -DSHIELD=mykeyboard
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware
+          path: build/zephyr/zephyr.uf2
