@@ -12,25 +12,30 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # 1. Клон репозиторію + підтягуємо submodules
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive   # підтягуємо ZMK submodule
+          submodules: recursive
 
-      - name: Set up Python & west
+      # 2. Встановлюємо Python та West
+      - name: Set up Python & West
         run: |
           python3 -m pip install --upgrade pip
           pip install west
 
+      # 3. Ініціалізація West (тільки overlay)
       - name: Initialize West
         run: |
-          west init -l config zmk
+          west init -l config
           west update
 
+      # 4. Збірка прошивки
       - name: Build firmware
         run: |
           west build -s config -b nice_nano_v2 -- -DSHIELD=mykeyboard
 
+      # 5. Завантаження артефактів прошивки
       - name: Upload firmware
         uses: actions/upload-artifact@v4
         with:
