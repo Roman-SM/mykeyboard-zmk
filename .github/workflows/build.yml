@@ -9,8 +9,4 @@ on:
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
-    with:
-      build_matrix: |
-        - board: nice_nano_v2
-          shield: mykeyboard
+    uses: zmkfirmware/zmk/.github/workflows/build.yml@main
